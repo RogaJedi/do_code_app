@@ -1,0 +1,107 @@
+@startuml
+set namespaceSeparator ::
+
+class "do_code::main.dart::MyApp" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "do_code::main.dart::MyApp"
+
+class "do_code::navigation_cubit.dart::NavigationCubit" {
+  +void setPage()
+}
+
+"bloc::src::cubit.dart::Cubit" <|-- "do_code::navigation_cubit.dart::NavigationCubit"
+
+class "do_code::pages::auth_page.dart::AuthPage" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "do_code::pages::auth_page.dart::AuthPage"
+
+class "do_code::pages::feedback_page.dart::FeedbackPage" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "do_code::pages::feedback_page.dart::FeedbackPage"
+
+class "do_code::pages::home_page.dart::HomePage" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "do_code::pages::home_page.dart::HomePage"
+
+class "do_code::pages::levels_list_page.dart::LevelsListPage" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "do_code::pages::levels_list_page.dart::LevelsListPage"
+
+class "do_code::pages::progress_page.dart::ProgressPage" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "do_code::pages::progress_page.dart::ProgressPage"
+
+class "do_code::pages::tasks_of_the_level_page.dart::TasksOfTheLevelPage" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "do_code::pages::tasks_of_the_level_page.dart::TasksOfTheLevelPage"
+
+class "do_code::pages::task_page.dart::TaskPage" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "do_code::pages::task_page.dart::TaskPage"
+
+class "do_code::pages::test_page.dart::TestPage" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "do_code::pages::test_page.dart::TestPage"
+
+class "do_code::pages::user_page.dart::UserPage" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "do_code::pages::user_page.dart::UserPage"
+
+class "do_code::widgets::blocks_window.dart::BlocksWindow" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "do_code::widgets::blocks_window.dart::BlocksWindow"
+
+class "do_code::widgets::custom_button.dart::CustomButton" {
+  +dynamic Function() onTap
+  +Color mainColor
+  +double width
+  +double height
+  +String text
+  +Color textColor
+  +double fontSize
+  +bool hasIcon
+  +Icon? icon
+  +Widget build()
+}
+
+"do_code::widgets::custom_button.dart::CustomButton" o-- "null::dynamic Function()"
+"do_code::widgets::custom_button.dart::CustomButton" o-- "dart::ui::Color"
+"do_code::widgets::custom_button.dart::CustomButton" o-- "flutter::src::widgets::icon.dart::Icon"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "do_code::widgets::custom_button.dart::CustomButton"
+
+class "do_code::widgets::feedback_window.dart::FeedbackWindow" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "do_code::widgets::feedback_window.dart::FeedbackWindow"
+
+class "do_code::widgets::task_window.dart::TaskWindow" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "do_code::widgets::task_window.dart::TaskWindow"
+
+
+@enduml
