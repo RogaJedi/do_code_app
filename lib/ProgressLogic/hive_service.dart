@@ -45,5 +45,9 @@ class HiveService {
     return true;
   }
 
+  void clearAll() {
+    box.clear();
+  }
+
 
 }

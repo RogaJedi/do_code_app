@@ -2,8 +2,7 @@ import 'package:do_code/levels/levels_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../levels/level_1/level_1_main_page.dart';
-import '../levels/level_2/level_2_main_page.dart';
+import '../levels/selected_level_page.dart';
 import '../navigation_cubit.dart';
 
 class HomePage extends StatelessWidget {
@@ -21,9 +20,13 @@ class HomePage extends StatelessWidget {
                 case LevelPage.levelsPage:
                   return LevelsPage();
                 case LevelPage.level_1:
-                  return Level1MainPage();
+                  return SelectedLevelPage(levelID: 0, levelMessage: 'Уровень 1\nПеременные', levelReady: true,);
                 case LevelPage.level_2:
-                  return Level2MainPage();
+                  return SelectedLevelPage(levelID: 1, levelMessage: 'Уровень 2\nМассивы', levelReady: true,);
+                case LevelPage.level_3:
+                  return SelectedLevelPage(levelID: 2, levelMessage: 'Уровень 3\nУсловия', levelReady: false,);
+                case LevelPage.level_4:
+                  return SelectedLevelPage(levelID: 3, levelMessage: 'Уровень 4\nЦиклы', levelReady: false,);
               }
             }
         )

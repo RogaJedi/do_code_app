@@ -2,6 +2,7 @@ import 'package:do_code/ProgressLogic/progress_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'hive_service.dart';
+import 'level_data.dart';
 
 class ProgressCubit extends Cubit<ProgressState> {
   final HiveService hive;
@@ -11,6 +12,7 @@ class ProgressCubit extends Cubit<ProgressState> {
     tasks: {},
     levels: {},
     achievements: {},
+    firstSteps: false,
   )) {
     load();
   }
@@ -26,25 +28,35 @@ class ProgressCubit extends Cubit<ProgressState> {
       achievements: Map<String, bool>.from(
         hive.box.get('achievements', defaultValue: {}),
       ),
+      firstSteps: hive.box.get('firstSteps', defaultValue: false)
     ));
   }
 
-  void completeTask(String taskID, {String? levelID, List<String>? levelTasks}) {
+  void completeTask(String taskID) {
     hive.completeTask(taskID);
 
     final updatedTasks = Map<String, bool>.from(state.tasks);
     updatedTasks[taskID] = true;
 
-    var updatedLevels = Map<String, bool>.from(state.levels);
+    final updatedLevels = Map<String, bool>.from(state.levels);
 
-    if (levelID != null && levelTasks != null) {
-      final allDone = levelTasks.every(
-            (id) => updatedTasks[id] == true,
-      );
+    final updatedAchievements = Map<String, bool>.from(state.achievements);
 
-      if (allDone) {
-        hive.completeLevel(levelID);
-        updatedLevels[levelID] = true;
+    if (state.firstSteps == false) {
+      emit(state.copyWith(firstSteps: true));
+
+    }
+
+    for (final level in levels) {
+      if (level.taskIDs.contains(taskID)) {
+        final allDone = level.taskIDs.every(
+              (id) => updatedTasks[id] == true,
+        );
+
+        if (allDone) {
+          hive.completeLevel(level.id);
+          updatedLevels[level.id] = true;
+        }
       }
     }
 
@@ -52,6 +64,19 @@ class ProgressCubit extends Cubit<ProgressState> {
       tasks: updatedTasks,
       levels: updatedLevels,
     ));
+  }
+
+  bool isTaskCompleted(String taskID) {
+    return state.tasks[taskID] == true;
+  }
+
+  bool isTaskAvailable(String taskID, List<String> orderedTasks) {
+    final index = orderedTasks.indexOf(taskID);
+
+    if (index == -1) return false;
+    if (index == 0) return true;
+
+    return state.tasks[orderedTasks[index - 1]] == true;
   }
 
   void giveAchievement(String id) {
@@ -63,5 +88,20 @@ class ProgressCubit extends Cubit<ProgressState> {
     updated[id] = true;
 
     emit(state.copyWith(achievements: updated));
+  }
+
+  bool gotAchievement(String achievementID) {
+    return state.achievements[achievementID] == true;
+  }
+
+  void resetProgress() {
+    hive.clearAll();
+
+    emit(const ProgressState(
+      tasks: {},
+      levels: {},
+      achievements: {},
+      firstSteps: false
+    ));
   }
 }

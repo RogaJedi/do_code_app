@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 enum AppPage { levels, achievements, user }
 
-enum LevelPage { levelsPage, level_1, level_2 }
+enum LevelPage { levelsPage, level_1, level_2, level_3, level_4 }
 
 class NavigationCubit extends Cubit<AppPage> {
   NavigationCubit() : super(AppPage.levels);
