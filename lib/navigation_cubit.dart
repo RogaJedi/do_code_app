@@ -1,8 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'levels_list_state.dart';
+
 enum AppPage { levels, achievements, user }
 
-enum LevelPage { levelsPage, level_1, level_2, level_3, level_4 }
 
 class NavigationCubit extends Cubit<AppPage> {
   NavigationCubit() : super(AppPage.levels);
@@ -10,8 +11,16 @@ class NavigationCubit extends Cubit<AppPage> {
   void setPage(AppPage page) => emit(page);
 }
 
-class LevelsNavigationCubit extends Cubit<LevelPage> {
-  LevelsNavigationCubit() : super(LevelPage.levelsPage);
+class LevelsNavigationCubit extends Cubit<LevelViewState> {
+  LevelsNavigationCubit() : super(LevelsListState());
 
-  void setLevelPage(LevelPage page) => emit(page);
+  void openLevels() => emit(LevelsListState());
+
+  void openLevel(int levelIndex) {
+    emit(LevelDetailState(levelIndex));
+  }
+
+  void openTask(int levelIndex, int taskIndex) {
+    emit(TaskDetailState(levelIndex, taskIndex));
+  }
 }

@@ -69,19 +69,30 @@ Widget TaskButton(
 }
 
 
+Widget ReturnButton(BuildContext context) {
+  return CustomArcadeButton(
+    onTap: () {
+      context.read<LevelsNavigationCubit>().openLevels();
+    },
+    mainColor: const Color(0xFF5118B1),
+    shadowColor: const Color(0xFF300e6a),
+    width: 220,
+    height: 100,
+    text: "Вернуться",
+    fontSize: 35,
+    textColor: Colors.white,
+  );
+}
+
 
 class SelectedLevelPage extends StatelessWidget {
 
   final int levelID;
-  final String levelMessage;
-  final bool levelReady;
 
 
   const SelectedLevelPage({
     super.key,
     required this.levelID,
-    required this.levelMessage,
-    required this.levelReady
   });
 
   @override
@@ -89,137 +100,70 @@ class SelectedLevelPage extends StatelessWidget {
 
     final tasks = levels[levelID].taskIDs;
 
+
     return Scaffold(
-        body: BlocBuilder<LevelsNavigationCubit, LevelPage>(
-            builder: (context, page)
-            {
-              return Center(
-                  child: SafeArea(
-                    child: levelReady
-                        ? Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(levelMessage, style: TextStyle(fontSize: 50), textAlign: TextAlign.center,),
-                        SizedBox(height: 120,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            TaskButton(
-                                tasks[0],
-                                tasks,
-                                    () { context.read<ProgressCubit>().completeTask(tasks[0]); },
-                                100,
-                                false
-                            ),
-                            SizedBox(width: 20,),
-                            TaskButton(
-                                tasks[1],
-                                tasks,
-                                    () { context.read<ProgressCubit>().completeTask(tasks[1]); },
-                                100,
-                                false
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20,),
-                        TaskButton(
-                            tasks[2],
-                            tasks,
-                                () { context.read<ProgressCubit>().completeTask(tasks[2]); },
-                            220,
-                            true
-                        ),
-
-                        SizedBox(height: 60,),
-                        CustomArcadeButton(
-                          onTap: () { context.read<LevelsNavigationCubit>().setLevelPage(LevelPage.levelsPage); },
-                          mainColor: Color(0xFF5118B1),
-                          shadowColor: Color(0xFF300e6a),
-                          width: 220,
-                          height: 100,
-                          text: "Вернуться",
-                          fontSize: 35,
-                          textColor: Colors.white,
-                        )
-                      ],
-                    )
-
-
-                        : Column(
+        body: Center(
+            child: SafeArea(
+                child: levels[levelID].levelReady
+                    ? Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      levels[levelID].levelMessage,
+                      style: TextStyle(fontSize: 50),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 120,),
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          "Этот уровень\nв разработке,\nно скоро\nбудет готов!",
-                          style: TextStyle(fontSize: 40),
-                          textAlign: TextAlign.center,
+                        TaskButton(
+                            tasks[0],
+                            tasks,
+                                () { context.read<LevelsNavigationCubit>().openTask(levelID, 0); },
+                            100,
+                            false
                         ),
-                        SizedBox(height: 60,),
-                        CustomArcadeButton(
-                          onTap: () { context.read<LevelsNavigationCubit>().setLevelPage(LevelPage.levelsPage); },
-                          mainColor: Color(0xFF5118B1),
-                          shadowColor: Color(0xFF300e6a),
-                          width: 220,
-                          height: 100,
-                          text: "Вернуться",
-                          fontSize: 35,
-                          textColor: Colors.white,
-                        )
+                        SizedBox(width: 20,),
+                        TaskButton(
+                            tasks[1],
+                            tasks,
+                                () { context.read<LevelsNavigationCubit>().openTask(levelID, 1); },
+                            100,
+                            false
+                        ),
                       ],
-                    )
+                    ),
+                    SizedBox(height: 20,),
+                    TaskButton(
+                        tasks[2],
+                        tasks,
+                            () { context.read<LevelsNavigationCubit>().openTask(levelID, 2); },
+                        220,
+                        true
+                    ),
 
-                  )
-              );
-            }
+                    SizedBox(height: 60,),
+                    ReturnButton(context)
+                  ],
+                )
+
+
+                    : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Этот уровень\nв разработке,\nно скоро\nбудет готов!",
+                      style: TextStyle(fontSize: 40),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 60,),
+                    ReturnButton(context)
+                  ],
+                )
+
+            )
         )
     );
   }
 }
-/*
-Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(levelMessage, style: TextStyle(fontSize: 50), textAlign: TextAlign.center,),
-                        SizedBox(height: 120,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            TaskButton(
-                                tasks[0],
-                                tasks,
-                                    () { context.read<ProgressCubit>().completeTask(tasks[0]); },
-                                100,
-                                false
-                            ),
-                            SizedBox(width: 20,),
-                            TaskButton(
-                                tasks[1],
-                                tasks,
-                                    () { context.read<ProgressCubit>().completeTask(tasks[1]); },
-                                100,
-                                false
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20,),
-                        TaskButton(
-                            tasks[2],
-                            tasks,
-                                () { context.read<ProgressCubit>().completeTask(tasks[2]); },
-                            220,
-                            true
-                        ),
-
-                        SizedBox(height: 60,),
-                        CustomArcadeButton(
-                          onTap: () { context.read<LevelsNavigationCubit>().setLevelPage(LevelPage.levelsPage); },
-                          mainColor: Color(0xFF5118B1),
-                          shadowColor: Color(0xFF300e6a),
-                          width: 220,
-                          height: 100,
-                          text: "Вернуться",
-                          fontSize: 35,
-                          textColor: Colors.white,
-                        )
-                      ],
-                    )
- */
