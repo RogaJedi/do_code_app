@@ -1,6 +1,7 @@
 import 'package:do_code/ProgressLogic/progress_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'achievement_data.dart';
 import 'hive_service.dart';
 import 'level_data.dart';
 
@@ -12,7 +13,6 @@ class ProgressCubit extends Cubit<ProgressState> {
     tasks: {},
     levels: {},
     achievements: {},
-    firstSteps: false,
   )) {
     load();
   }
@@ -28,7 +28,6 @@ class ProgressCubit extends Cubit<ProgressState> {
       achievements: Map<String, bool>.from(
         hive.box.get('achievements', defaultValue: {}),
       ),
-      firstSteps: hive.box.get('firstSteps', defaultValue: false)
     ));
   }
 
@@ -42,11 +41,6 @@ class ProgressCubit extends Cubit<ProgressState> {
 
     final updatedAchievements = Map<String, bool>.from(state.achievements);
 
-    if (state.firstSteps == false) {
-      emit(state.copyWith(firstSteps: true));
-
-    }
-
     for (final level in levels) {
       if (level.taskIDs.contains(taskID)) {
         final allDone = level.taskIDs.every(
@@ -56,13 +50,29 @@ class ProgressCubit extends Cubit<ProgressState> {
         if (allDone) {
           hive.completeLevel(level.id);
           updatedLevels[level.id] = true;
+
+          for (final achievement in achievements) {
+            if (achievement.type == AchievementType.level &&
+                achievement.levelID == level.id &&
+                updatedAchievements[achievement.id] != true) {
+
+              hive.giveAchievement(achievement.id);
+              updatedAchievements[achievement.id] = true;
+            }
+          }
         }
       }
+    }
+
+    if (updatedAchievements['firstSteps'] != true) {
+      hive.giveAchievement('firstSteps');
+      updatedAchievements['firstSteps'] = true;
     }
 
     emit(state.copyWith(
       tasks: updatedTasks,
       levels: updatedLevels,
+      achievements: updatedAchievements,
     ));
   }
 
@@ -101,7 +111,6 @@ class ProgressCubit extends Cubit<ProgressState> {
       tasks: {},
       levels: {},
       achievements: {},
-      firstSteps: false
     ));
   }
 }

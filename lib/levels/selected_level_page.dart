@@ -16,10 +16,13 @@ Widget TaskButton(
     ) {
   return BlocBuilder<ProgressCubit, ProgressState>(
     builder: (context, state) {
+
       final cubit = context.read<ProgressCubit>();
 
       final isCompleted = cubit.isTaskCompleted(taskID);
       final isAvailable = cubit.isTaskAvailable(taskID, orderedTasks);
+
+      final taskCompletedColor = Color(0xFFFF9300);
 
       return CustomArcadeButton(
         onTap: isAvailable ? onTap : () {},
@@ -38,19 +41,19 @@ Widget TaskButton(
             Icon(
               Icons.star_rounded,
               size: 50,
-              color: isCompleted ? Colors.orange : Colors.white,
+              color: isCompleted ? taskCompletedColor : Colors.white,
             ),
             SizedBox(width: 0,),
             Icon(
               Icons.star_rounded,
               size: 70,
-              color: isCompleted ? Colors.orange : Colors.white,
+              color: isCompleted ? taskCompletedColor : Colors.white,
             ),
             SizedBox(width: 0,),
             Icon(
               Icons.star_rounded,
               size: 50,
-              color: isCompleted ? Colors.orange : Colors.white,
+              color: isCompleted ? taskCompletedColor : Colors.white,
             )
           ],
         )
@@ -58,13 +61,12 @@ Widget TaskButton(
         Icon(
           Icons.star_rounded,
           size: 50,
-          color: isCompleted ? Colors.orange : Colors.white,
+          color: isCompleted ? taskCompletedColor : Colors.white,
         )
       );
     },
   );
 }
-
 
 
 
