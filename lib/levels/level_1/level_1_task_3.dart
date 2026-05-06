@@ -27,8 +27,7 @@ const level_1_task3 = TaskData(
   ],
 
   texts: {
-    "title": "Задание",
-    "success": "Отлично! 🎉",
+    "success": "Отлично!",
     "fail": "Похоже, есть ошибка",
   },
 
