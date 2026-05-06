@@ -94,7 +94,24 @@ class ProgressCubit extends Cubit<ProgressState> {
     return state.tasks[orderedTasks[index - 1]] == true;
   }
 
-  //FOR ACHIEVEMENTS------------------------------------------------------------------
+  //VALIDATION============================================================================
+
+  bool validateTask(TaskData task) {
+    for (final entry in task.correctAnswers.entries) {
+      final dropZoneID = entry.key;
+      final correctBlockID = entry.value;
+
+      final placed = state.placedBlocks[dropZoneID];
+
+      if (placed == null || placed.id != correctBlockID) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  //FOR ACHIEVEMENTS===========================================================================
 
   void giveAchievement(String id) {
     if (state.achievements[id] == true) return;
@@ -111,7 +128,7 @@ class ProgressCubit extends Cubit<ProgressState> {
     return state.achievements[achievementID] == true;
   }
 
-  //FOR BLOCKS-------------------------------------------------------------------------
+  //FOR BLOCKS===========================================================================
 
   void placeBlock(String dropZoneID, BlockData block) {
     final updated = Map<String, BlockData>.from(state.placedBlocks);
