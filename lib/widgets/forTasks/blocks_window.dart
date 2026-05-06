@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../ProgressLogic/progress_cubit.dart';
+import '../../ProgressLogic/progress_state.dart';
 import 'constructor/task_data.dart';
 
 const blockColors = [
@@ -74,52 +77,69 @@ Widget _buildArcadeBlock(String text, Color mainColor, Color shadowColor) {
   );
 }
 
-Widget _buildBlock(String text, Color color) {
-  return Container(
-    height: 70,
-    width: 110,
-    decoration: BoxDecoration(
-      color: color,
-      borderRadius: BorderRadius.circular(15),
-    ),
-    child: Center(
-      child: Text(
-        textAlign: TextAlign.center,
-        text,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 30,
-        ),
+Widget _buildDraggableBlock(BlockData block, int index) {
+  return Draggable<BlockData>(
+    data: block,
+
+    feedback: Material(
+      color: Colors.transparent,
+      child: _buildArcadeBlock(
+        block.label,
+        _getBlockColor(block.colorIndex),
+        _getBlockShadowColor(block.colorIndex),
       ),
+    ),
+
+    childWhenDragging: const SizedBox.shrink(),
+
+    child: _buildArcadeBlock(
+      block.label,
+      _getBlockColor(index),
+      _getBlockShadowColor(index),
     ),
   );
 }
+
 
 Widget BlocksWindow(BuildContext context, TaskData task) {
   double screenWidth = MediaQuery.of(context).size.width;
   double areaWidth = screenWidth - 20;
 
-  return Container(
-    width: areaWidth,
-    height: 250,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(15),
-      color: const Color(0xFFcecece),
-    ),
-    child: Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Center(
-        child: Wrap(
-          spacing: 10,
-          runSpacing: 10,
-          children: task.blocks.asMap().entries.map((entry) {
-            final index = entry.key;
-            final block = entry.value;
+  return BlocBuilder<ProgressCubit, ProgressState>(
+    builder: (context, state) {
+      final cubit = context.read<ProgressCubit>();
 
-            return _buildArcadeBlock(block, _getBlockColor(index), _getBlockShadowColor(index));
-          }).toList(),
+      return Container(
+        width: areaWidth,
+        height: 250,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: const Color(0xFFcecece),
         ),
-      )
-    ),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Center(
+            child: Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: task.blocks
+                  .asMap()
+                  .entries
+                  .where((entry) {
+                final block = entry.value;
+                return !cubit.isBlockUsed(block.id);
+              })
+                  .map((entry) {
+                final index = entry.key;
+                final block = entry.value;
+
+                return _buildDraggableBlock(block, index);
+              })
+                  .toList(),
+            ),
+          ),
+        ),
+      );
+    },
   );
 }

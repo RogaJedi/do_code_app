@@ -8,11 +8,23 @@ class TaskRowData {
   const TaskRowData(this.items);
 }
 
+class BlockData {
+  final String id;
+  final String label;
+  final int colorIndex;
+
+  const BlockData({
+    required this.id,
+    required this.label,
+    required this.colorIndex,
+  });
+}
+
 class TaskData {
   final String id;
 
   final List<TaskRowData> rows;
-  final List<String> blocks;
+  final List<BlockData> blocks;
   final List<String> taskText;
 
   const TaskData({

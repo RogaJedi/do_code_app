@@ -1,17 +1,109 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../ProgressLogic/progress_cubit.dart';
+import '../../ProgressLogic/progress_state.dart';
 import 'constructor/row_item.dart';
 import 'constructor/task_data.dart';
 
-Widget _buildDropZone() {
+const blockColors = [
+  Color(0xFF0077ca),
+  Color(0xFF35ae00),
+  Color(0xFF9300ac),
+  Color(0xFFec7300),
+  Color(0xFFca0000),
+  Color(0xFF00ca7b),
+];
+
+const blockShadowColors = [
+  Color(0xFF004779),
+  Color(0xFF1f6800),
+  Color(0xFF580067),
+  Color(0xFF8d4500),
+  Color(0xFF790000),
+  Color(0xFF007949),
+];
+
+Color _getBlockColor(int index) {
+  return blockColors[index % blockColors.length];
+}
+
+Color _getBlockShadowColor(int index) {
+  return blockShadowColors[index % blockShadowColors.length];
+}
+
+Widget _buildPlacedArcadeBlock(String text, Color mainColor, Color shadowColor) {
+
+  const double depth = 10;
+  const double width = 110;
+  const double height = 80;
+
   return Container(
-    height: 80,
-    width: 100,
-    margin: const EdgeInsets.symmetric(horizontal: 5),
+    height: height,
+    width: width,
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: mainColor,
       borderRadius: BorderRadius.circular(15),
     ),
+    child: Center(
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 25,
+        ),
+      ),
+    ),
+  );
+}
+
+Widget _buildDropZone(BuildContext context, String id) {
+  return BlocBuilder<ProgressCubit, ProgressState>(
+    builder: (context, state) {
+      final cubit = context.read<ProgressCubit>();
+      final placed = state.placedBlocks[id];
+
+      return DragTarget<BlockData>(
+        onWillAccept: (data) {
+          return placed == null;
+        },
+
+        onAccept: (data) {
+          cubit.placeBlock(id, data);
+        },
+
+        builder: (context, candidateData, rejectedData) {
+          return GestureDetector(
+            onTap: () {
+              if (placed != null) {
+                cubit.removeBlock(id);
+              }
+            },
+            child: placed != null
+                ? _buildPlacedArcadeBlock(
+              placed.label,
+              _getBlockColor(
+                placed.colorIndex,
+              ),
+              _getBlockShadowColor(
+                placed.colorIndex,
+              ),
+            )
+                : Container(
+              height: 80,
+              width: 100,
+              margin: const EdgeInsets.symmetric(horizontal: 5),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(color: Colors.black26),
+              ),
+            ),
+          );
+        },
+      );
+    },
   );
 }
 
@@ -50,7 +142,7 @@ Widget WorkWindow(BuildContext context, TaskData task) {
                     ),
                   );
                 } else {
-                  return _buildDropZone();
+                  return _buildDropZone(context, item.id!);
                 }
               }),
             ],

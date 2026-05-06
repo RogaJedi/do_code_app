@@ -1,4 +1,5 @@
 import 'package:do_code/ProgressLogic/progress_state.dart';
+import 'package:do_code/widgets/forTasks/constructor/task_data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'achievement_data.dart';
@@ -10,9 +11,10 @@ class ProgressCubit extends Cubit<ProgressState> {
 
   ProgressCubit(this.hive)
       : super(const ProgressState(
-    tasks: {},
-    levels: {},
-    achievements: {},
+      tasks: {},
+      levels: {},
+      achievements: {},
+      placedBlocks: {}
   )) {
     load();
   }
@@ -28,8 +30,11 @@ class ProgressCubit extends Cubit<ProgressState> {
       achievements: Map<String, bool>.from(
         hive.box.get('achievements', defaultValue: {}),
       ),
+      placedBlocks: {}
     ));
   }
+
+  //FOR TASKS------------------------------------------------------------------------
 
   void completeTask(String taskID) {
     hive.completeTask(taskID);
@@ -89,6 +94,8 @@ class ProgressCubit extends Cubit<ProgressState> {
     return state.tasks[orderedTasks[index - 1]] == true;
   }
 
+  //FOR ACHIEVEMENTS------------------------------------------------------------------
+
   void giveAchievement(String id) {
     if (state.achievements[id] == true) return;
 
@@ -104,6 +111,34 @@ class ProgressCubit extends Cubit<ProgressState> {
     return state.achievements[achievementID] == true;
   }
 
+  //FOR BLOCKS-------------------------------------------------------------------------
+
+  void placeBlock(String dropZoneID, BlockData block) {
+    final updated = Map<String, BlockData>.from(state.placedBlocks);
+
+    updated.removeWhere((key, value) => value.id == block.id);
+
+    updated[dropZoneID] = block;
+
+    emit(state.copyWith(placedBlocks: updated));
+  }
+
+  void removeBlock(String dropZoneID) {
+    final updated = Map<String, BlockData>.from(state.placedBlocks);
+    updated.remove(dropZoneID);
+
+    emit(state.copyWith(placedBlocks: updated));
+  }
+
+  bool isBlockUsed(String blockID) {
+    return state.placedBlocks.values.any((b) => b.id == blockID);
+  }
+
+
+
+
+
+
   void resetProgress() {
     hive.clearAll();
 
@@ -111,6 +146,7 @@ class ProgressCubit extends Cubit<ProgressState> {
       tasks: {},
       levels: {},
       achievements: {},
+      placedBlocks: {}
     ));
   }
 }
