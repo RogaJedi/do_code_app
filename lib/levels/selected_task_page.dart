@@ -1,12 +1,12 @@
-import 'package:do_code/levels/level_1/task_1/task_1_blocks.dart';
-import 'package:do_code/levels/level_1/task_1/task_1_tasks.dart';
 import 'package:do_code/widgets/forTasks/blocks_window.dart';
 import 'package:do_code/widgets/forTasks/work_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../ProgressLogic/level_data.dart';
 import '../navigation_cubit.dart';
 import '../widgets/custom_arcade_button.dart';
+import '../widgets/forTasks/constructor/task_data.dart';
 
 
 Widget TaskReturnButton(BuildContext context, int levelIndex) {
@@ -45,6 +45,9 @@ class SelectedTaskPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    final taskKey = levels[levelID].taskIDs[taskID];
+    final taskData = taskMap[taskKey]!;
+
     return Scaffold(
       body: SafeArea(
           child: Center(
@@ -71,10 +74,10 @@ class SelectedTaskPage extends StatelessWidget {
                   ),
                   SizedBox(height: 10,),
 
-                  WorkWindow(context, Task1Tasks()),
+                  WorkWindow(context, taskData),
                   AreaDivider(),
 
-                  BlocksWindow(context, Task1Blocks()),
+                  BlocksWindow(context, taskData),
                   SizedBox(height: 10,),
 
                   CustomArcadeButton(

@@ -1,49 +1,62 @@
 import 'package:flutter/material.dart';
 
-Widget TaskRow(String taskNumber, Widget task) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.start,
-    children: [
-      Text(
-        "$taskNumber.",
-        style: TextStyle(
-          fontSize: 40,
-          color: Colors.black,
-        ),
-      ),
-      SizedBox(width: 10,),
-      task
-    ],
+import 'constructor/row_item.dart';
+import 'constructor/task_data.dart';
+
+Widget _buildDropZone() {
+  return Container(
+    height: 80,
+    width: 100,
+    margin: const EdgeInsets.symmetric(horizontal: 5),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(15),
+    ),
   );
 }
 
 
-Widget WorkWindow(BuildContext context, List<Widget> threeTasks) {
-
+Widget WorkWindow(BuildContext context, TaskData task) {
   double screenWidth = MediaQuery.of(context).size.width;
   double areaWidth = screenWidth - 20;
 
   return Container(
-      width: areaWidth,
-      height: 300,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        color: Color(0xFFcecece),
+    width: areaWidth,
+    height: 300,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(15),
+      color: const Color(0xFFcecece),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: List.generate(task.rows.length, (rowIndex) {
+          final row = task.rows[rowIndex];
+
+          return Row(
+            children: [
+              Text("${rowIndex + 1}.", style: const TextStyle(fontSize: 40)),
+              const SizedBox(width: 10),
+
+              ...row.items.map((item) {
+                if (item.type == RowItemType.text) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: Text(
+                      item.text!,
+                      style: const TextStyle(fontSize: 40),
+                    ),
+                  );
+                } else {
+                  return _buildDropZone();
+                }
+              }),
+            ],
+          );
+        }),
       ),
-      child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Container(
-            color: Colors.transparent,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TaskRow('1', threeTasks[0]),
-                TaskRow('2', threeTasks[1]),
-                TaskRow('3', threeTasks[2]),
-              ],
-            ),
-          )
-      )
+    ),
   );
 }
