@@ -3,7 +3,34 @@ import 'package:do_code/ProgressLogic/progress_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../ProgressLogic/achievement_data.dart';
 import '../widgets/custom_arcade_button.dart';
+import '../widgets/custom_arcade_popup.dart';
+
+
+
+void showAchievementPopup(
+    BuildContext context,
+    AchievementData achievement,
+    ) {
+  showGameDialog(
+    context: context,
+    child: CustomArcadePopup(
+      content: achievement.condition,
+      actions: [
+        CustomArcadeButton(
+            onTap: () { Navigator.pop(context); },
+            mainColor: Color(0xFFFF9300),
+            shadowColor: Color(0xFF995800),
+            width: 80,
+            height: 60,
+          icon: Icon(Icons.thumb_up_alt_rounded, color: Colors.white, size: 30,),
+        ),
+      ],
+    ),
+  );
+}
+
 
 Widget ProgressButton(String achievementID, Function() onTap, String text){
   return BlocBuilder<ProgressCubit, ProgressState>(
@@ -50,16 +77,52 @@ class ProgressPage extends StatelessWidget {
                       Text("Мой прогресс", style: TextStyle(fontSize: 50), textAlign: TextAlign.center,),
                       SizedBox(height: 20,),
 
-                      ProgressButton('firstSteps', () {}, "Первые шаги"),
+                      ProgressButton(
+                          'firstSteps',
+                              () {
+                                showAchievementPopup(
+                                  context,
+                                  achievementMap['firstSteps']!,
+                                );
+                              },
+                          "Первые шаги"
+                      ),
                       SizedBox(height: 20,),
 
-                      ProgressButton('varMaster', () {}, "Знаток переменных"),
+                      ProgressButton(
+                          'varMaster',
+                              () {
+                                showAchievementPopup(
+                                  context,
+                                  achievementMap['varMaster']!,
+                                );
+                              },
+                        "Знаток переменных"
+                      ),
                       SizedBox(height: 20,),
 
-                      ProgressButton('arrayMaster', () {}, "Знаток массивов"),
+                      ProgressButton(
+                          'arrayMaster',
+                              () {
+                                showAchievementPopup(
+                                  context,
+                                  achievementMap['arrayMaster']!,
+                                );
+                              },
+                          "Знаток массивов"
+                      ),
                       SizedBox(height: 20,),
 
-                      ProgressButton('subscription', () {}, "Серьёзные намерения"),
+                      ProgressButton(
+                          'subscription',
+                              () {
+                                showAchievementPopup(
+                                  context,
+                                  achievementMap['subscription']!,
+                                );
+                              },
+                          "Серьёзные намерения"
+                      ),
                     ],
                   ),
                 )

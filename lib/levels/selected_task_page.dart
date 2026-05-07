@@ -1,4 +1,6 @@
+import 'package:do_code/widgets/custom_arcade_popup.dart';
 import 'package:do_code/widgets/forTasks/blocks_window.dart';
+import 'package:do_code/widgets/forTasks/task_explain_popup.dart';
 import 'package:do_code/widgets/forTasks/work_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,7 +18,6 @@ String buildAnswerExplanation(TaskData task) {
   int i = 1;
 
   for (final entry in task.correctAnswers.entries) {
-    final dropZoneID = entry.key;
     final correctBlockID = entry.value;
 
     final block = task.blocks.firstWhere(
@@ -33,6 +34,22 @@ String buildAnswerExplanation(TaskData task) {
   return buffer.toString();
 }
 
+Widget PopupButton({
+  required String text,
+  required VoidCallback onTap,
+}) {
+  return CustomArcadeButton(
+    onTap: onTap,
+    mainColor: const Color(0xFF5118B1),
+    shadowColor: const Color(0xFF300e6a),
+    width: 140,
+    height: 60,
+    text: text,
+    textColor: Colors.white,
+    fontSize: 25,
+  );
+}
+
 void _showResultDialog(
     BuildContext context,
     bool isCorrect,
@@ -40,66 +57,82 @@ void _showResultDialog(
     int levelID,
     int taskID,
     ) {
-  showDialog(
+  showGameDialog(
     context: context,
-    builder: (_) {
-      return AlertDialog(
-        title: Text(isCorrect
-            ? task.texts["success"]!
-            : task.texts["fail"]!),
 
-        actions: isCorrect
-            ? [
-          TextButton(
-            onPressed: () {
-              context.read<ProgressCubit>().completeTask(task.id);
+    child: CustomArcadePopup(
+      content: isCorrect
+          ? task.successText
+          : task.failText,
 
-              Navigator.pop(context); // close dialog
-              context.read<LevelsNavigationCubit>().openLevel(levelID);
-            },
-            child: const Text("Продолжить"),
-          ),
-        ]
-            : [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text("Попробовать снова"),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context); // close main dialog
+      actions: isCorrect
 
-              _showAnswerDialog(context, task);
-            },
-            child: const Text("Показать ответ"),
-          ),
-        ],
-      );
-    },
+          ? [
+        PopupButton(
+          text: "Далее",
+          onTap: () {
+
+            context
+                .read<ProgressCubit>()
+                .completeTask(task.id);
+
+            Navigator.pop(context);
+
+            context
+                .read<LevelsNavigationCubit>()
+                .openLevel(levelID);
+          },
+        ),
+      ]
+
+          : [
+        PopupButton(
+          text: "Назад",
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
+
+        PopupButton(
+          text: "Ответ",
+          onTap: () {
+
+            Navigator.pop(context);
+
+            _showAnswerDialog(
+              context,
+              task,
+            );
+          },
+        ),
+      ],
+    ),
   );
 }
 
-void _showAnswerDialog(BuildContext context, TaskData task) {
-  final explanation = buildAnswerExplanation(task);
+void _showAnswerDialog(
+    BuildContext context,
+    TaskData task,
+    ) {
 
-  showDialog(
+  final explanation =
+  buildAnswerExplanation(task);
+
+  showGameDialog(
     context: context,
-    builder: (_) {
-      return AlertDialog(
-        title: const Text("Ответ"),
-        content: Text(explanation),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text("ОК"),
-          ),
-        ],
-      );
-    },
+
+    child: CustomArcadePopup(
+      content: explanation,
+
+      actions: [
+        PopupButton(
+          text: "OK",
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
+      ],
+    ),
   );
 }
 
@@ -116,6 +149,7 @@ Widget TaskReturnButton(BuildContext context, int levelIndex) {
     icon: Icon(Icons.keyboard_return_rounded, color: Colors.white, size: 50,),
   );
 }
+
 
 Widget AreaDivider() {
   return Divider(
@@ -156,7 +190,14 @@ class SelectedTaskPage extends StatelessWidget {
                       TaskReturnButton(context, levelID),
                       SizedBox(width: 10,),
                       CustomArcadeButton(
-                          onTap: () {},
+                          onTap: () {
+                            showGameDialog(
+                              context: context,
+                              child: TaskExplainPopup(
+                                task: taskData,
+                              ),
+                            );
+                          },
                           mainColor: Color(0xFF2d9400),
                           shadowColor: Color(0xFF1b5800),
                           width: 250,
@@ -185,7 +226,7 @@ class SelectedTaskPage extends StatelessWidget {
                     mainColor: Color(0xFF00E5DC),
                     shadowColor: Color(0xFF008984),
                     width: 250,
-                    height: 60,
+                    height: 70,
                     text: "Проверить",
                     textColor: Colors.white,
                     fontSize: 35,

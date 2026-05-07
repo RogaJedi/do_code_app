@@ -29,58 +29,58 @@ void showGameDialog({
 }
 
 class CustomArcadePopup extends StatelessWidget {
-  final String? title;
-  final Widget content;
+  final String content;
   final List<Widget> actions;
 
   const CustomArcadePopup({
     super.key,
-    this.title,
     required this.content,
     required this.actions,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 350,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: const Color(0xFF2c2c2c),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-
-          title == null
-          ? SizedBox()
-          : Text(
-            title!,
-            style: const TextStyle(
-              fontSize: 28,
-              color: Colors.white,
-            ),
-            textAlign: TextAlign.center,
+    return Material(
+      type: MaterialType.transparency,
+      child: Container(
+          width: 350,
+          height: 500,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: const Color(0xFFf3f6f4),
+            borderRadius: BorderRadius.circular(20),
           ),
-
-          SizedBox(height: title == null ? 0 : 20),
-
-
-          content,
+          child: Stack(
+            children: [
 
 
-          const SizedBox(height: 20),
+              Center(
+                child: Text(
+                  content,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: content.length <= 90
+                        ? 30
+                        : 20,
+                    fontWeight: FontWeight.w400,
+                    fontFamily: 'VAG',
+                  ),
+                ),
+              ),
 
-          Column(
-            children: actions
-                .map((a) => Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: a,
-            ))
-                .toList(),
+
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: actions,
+                ),
+              )
+            ],
           )
-        ],
       ),
     );
   }

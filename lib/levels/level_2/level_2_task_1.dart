@@ -29,10 +29,11 @@ const level_2_task1 = TaskData(
     BlockData(id: "l2_t1_block3", label: "\"Мяу\", \"Гав\"", colorIndex: 2),
   ],
 
-  texts: {
-    "success": "Отлично!",
-    "fail": "Похоже, есть ошибка",
-  },
+  explanationTexts: ['lorem ipsum'],
+  taskText: 'lorem ipsum',
+
+  successText: 'good',
+  failText: 'bad',
 
   correctAnswers: {
     "l2_t1_row1_slot": "l2_t1_block1",

@@ -34,14 +34,22 @@ class TaskData {
   final List<TaskRowData> rows;
   final List<BlockData> blocks;
 
-  final Map<String, String> texts;
+  final List<String> explanationTexts;
+
+  final String taskText;
+  final String successText;
+  final String failText;
+
   final Map<String, String> correctAnswers;
 
   const TaskData({
     required this.id,
     required this.rows,
     required this.blocks,
-    required this.texts,
+    required this.explanationTexts,
+    required this.taskText,
+    required this.successText,
+    required this.failText,
     required this.correctAnswers,
   });
 }
