@@ -34,7 +34,6 @@ Color _getBlockShadowColor(int index) {
 
 Widget _buildPlacedArcadeBlock(String text, Color mainColor, Color shadowColor) {
 
-  const double depth = 10;
   const double width = 110;
   const double height = 80;
 
@@ -129,7 +128,7 @@ Widget WorkWindow(BuildContext context, TaskData task) {
 
           return Row(
             children: [
-              Text("${rowIndex + 1}.", style: const TextStyle(fontSize: 40)),
+              Text("${rowIndex + 1}.", style: const TextStyle(fontSize: 30)),
               const SizedBox(width: 10),
 
               ...row.items.map((item) {
@@ -138,7 +137,7 @@ Widget WorkWindow(BuildContext context, TaskData task) {
                     padding: const EdgeInsets.symmetric(horizontal: 5),
                     child: Text(
                       item.text!,
-                      style: const TextStyle(fontSize: 40),
+                      style: const TextStyle(fontSize: 30),
                     ),
                   );
                 } else {
