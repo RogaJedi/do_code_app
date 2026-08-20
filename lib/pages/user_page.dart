@@ -25,6 +25,17 @@ class UserPage extends StatelessWidget {
                       SizedBox(height: 80,),
                       CustomArcadeButton(
                           onTap: () {},
+                          mainColor: const Color(0xFF00a6ca),
+                          shadowColor: const Color(0xFF006379),
+                          width: 400,
+                          height: 100,
+                          text: "Настройки",
+                          textColor: Colors.white,
+                          fontSize: 30
+                      ),
+                      SizedBox(height: 20,),
+                      CustomArcadeButton(
+                          onTap: () {},
                           mainColor: Color(0xFF2d9400),
                           shadowColor: Color(0xFF1b5800),
                           width: 400,

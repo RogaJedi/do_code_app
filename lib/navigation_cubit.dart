@@ -4,7 +4,6 @@ import 'levels_list_state.dart';
 
 enum AppPage { levels, achievements, user }
 
-
 class NavigationCubit extends Cubit<AppPage> {
   NavigationCubit() : super(AppPage.levels);
 

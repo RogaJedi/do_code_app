@@ -53,29 +53,24 @@ class HubPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocBuilder<NavigationCubit, AppPage>(
-        builder: (context, page) {
-          switch (page) {
-            case AppPage.levels:
-              return HomePage();
-            case AppPage.achievements:
-              return ProgressPage();
-            case AppPage.user:
-              return UserPage();
-          }
-        },
-      ),
-      bottomNavigationBar: BlocBuilder<NavigationCubit, AppPage>(
-        builder: (context, page) {
-          return CustomArcadeBottomBar(
+    return BlocBuilder<NavigationCubit, AppPage>(
+      builder: (context, page) {
+
+        return Scaffold(
+          body: switch (page) {
+            AppPage.levels => HomePage(),
+            AppPage.achievements => ProgressPage(),
+            AppPage.user => UserPage(),
+          },
+
+          bottomNavigationBar: CustomArcadeBottomBar(
             currentPage: page,
             onTap: (newPage) {
               context.read<NavigationCubit>().setPage(newPage);
             },
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -7,62 +7,55 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../navigation_cubit.dart';
 import '../widgets/custom_arcade_button.dart';
 
+Widget TaskStar(bool isCompleted, double size) {
+
+  final taskCompletedColor = Color(0xFFFF9300);
+
+  return Icon(
+    Icons.star_rounded,
+    size: size,
+    color: isCompleted ? taskCompletedColor : Colors.white,
+  );
+}
+
+Widget TripleTaskStar(bool isCompleted) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      TaskStar(isCompleted, 50),
+      TaskStar(isCompleted, 70),
+      TaskStar(isCompleted, 50)
+    ],
+  );
+}
+
 Widget TaskButton(
-    String taskID,
-    List<String> orderedTasks,
-    Function() onTap,
-    double width,
-    bool triple,
+    int levelID,
+    int taskID,
     ) {
   return BlocBuilder<ProgressCubit, ProgressState>(
     builder: (context, state) {
 
+      final tasks = levels[levelID].taskIDs;
       final cubit = context.read<ProgressCubit>();
-
-      final isCompleted = cubit.isTaskCompleted(taskID);
-      final isAvailable = cubit.isTaskAvailable(taskID, orderedTasks);
-
-      final taskCompletedColor = Color(0xFFFF9300);
+      final isCompleted = cubit.isTaskCompleted(tasks[taskID]);
+      final isAvailable = cubit.isTaskAvailable(tasks[taskID], tasks);
 
       return CustomArcadeButton(
-        onTap: isAvailable ? onTap : () {},
+        onTap: isAvailable
+            ? () { context.read<LevelsNavigationCubit>().openTask(levelID, taskID); }
+            : () {},
         mainColor: isAvailable
             ? const Color(0xFF2d9400)
             : const Color(0xFF444444),
         shadowColor: isAvailable
             ? const Color(0xFF1b5800)
             : const Color(0xFF222222),
-        width: width,
+        width: taskID != 2 ? 100 : 220,
         height: 100,
-        icon: triple ?
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.star_rounded,
-              size: 50,
-              color: isCompleted ? taskCompletedColor : Colors.white,
-            ),
-            SizedBox(width: 0,),
-            Icon(
-              Icons.star_rounded,
-              size: 70,
-              color: isCompleted ? taskCompletedColor : Colors.white,
-            ),
-            SizedBox(width: 0,),
-            Icon(
-              Icons.star_rounded,
-              size: 50,
-              color: isCompleted ? taskCompletedColor : Colors.white,
-            )
-          ],
-        )
-            :
-        Icon(
-          Icons.star_rounded,
-          size: 50,
-          color: isCompleted ? taskCompletedColor : Colors.white,
-        )
+        icon: taskID != 2
+            ? TaskStar(isCompleted, 50)
+            : TripleTaskStar(isCompleted)
       );
     },
   );
@@ -89,7 +82,6 @@ class SelectedLevelPage extends StatelessWidget {
 
   final int levelID;
 
-
   const SelectedLevelPage({
     super.key,
     required this.levelID,
@@ -97,14 +89,11 @@ class SelectedLevelPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final tasks = levels[levelID].taskIDs;
-
-
     return Scaffold(
         body: Center(
             child: SafeArea(
                 child: levels[levelID].levelReady
+
                     ? Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -117,37 +106,18 @@ class SelectedLevelPage extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        TaskButton(
-                            tasks[0],
-                            tasks,
-                                () { context.read<LevelsNavigationCubit>().openTask(levelID, 0); },
-                            100,
-                            false
-                        ),
+                        TaskButton(levelID, 0),
                         SizedBox(width: 20,),
-                        TaskButton(
-                            tasks[1],
-                            tasks,
-                                () { context.read<LevelsNavigationCubit>().openTask(levelID, 1); },
-                            100,
-                            false
-                        ),
+                        TaskButton(levelID, 1),
                       ],
                     ),
                     SizedBox(height: 20,),
-                    TaskButton(
-                        tasks[2],
-                        tasks,
-                            () { context.read<LevelsNavigationCubit>().openTask(levelID, 2); },
-                        220,
-                        true
-                    ),
+                    TaskButton(levelID, 2),
 
                     SizedBox(height: 60,),
                     ReturnButton(context)
                   ],
                 )
-
 
                     : Column(
                   mainAxisAlignment: MainAxisAlignment.center,
